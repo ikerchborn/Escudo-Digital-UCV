@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESCUDO DIGITAL - Plataforma Oficial de Orientación</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            gob: {
+              red: '#C8102E',       // Rojo Institucional
+              redHover: '#A00D24',  // Rojo Hover
+              link: '#0056B3',      // Azul Enlaces
+              textMain: '#0F172A',  // Texto Principal (Muy Oscuro)
+              textSec: '#4A5568',   // Texto Secundario (Gris)
+              bg: '#F0F4F8',        // Fondo General Gris-Azulado
+              cardBg: '#FFFFFF',    // Blanco Puro
+              border: '#DEE2E6',    // Gris Suave
+              side: '#1A202C'       // Elementos Oscuros Lateral/Header Extra
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #F0F4F8;
+      color: #0F172A;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    
+    /* Custom scrollbar for sleek presentation */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F0F4F8;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 4px;
+    }
+
+    .focus-ring:focus {
+      outline: 2px solid #C8102E;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-gob-bg justify-between text-gob-textMain antialiased selection:bg-gob-red selection:text-white">
+
+  <!-- HEADER INSTITUCIONAL -->
+  <header class="bg-white border-b border-gob-border sticky top-0 z-40 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-2">
+      
+      <!-- Logo & Brand -->
+      <a href="#" onclick="resetToHome(event)" class="flex items-center space-x-2.5 sm:space-x-3 focus-ring rounded-md p-1 min-h-[44px]">
+        <!-- Logo Emblem de Blindaje/Escudo con Checkmark -->
+        <div class="w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0 flex items-center justify-center">
+          <svg class="w-full h-full text-gob-red" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="250" cy="250" r="250" fill="currentColor"/>
+            <!-- Escudo en trazo blanco -->
+            <path d="M250 60 C320 115 390 120 405 120 V250 C405 350 320 405 250 435 C180 405 95 350 95 250 V120 C110 120 180 115 250 60 Z" stroke="white" stroke-width="22" stroke-linejoin="round" fill="none"/>
+            <!-- Checkmark blanco en el centro -->
+            <path d="M170 260 L230 320 L330 195" stroke="white" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center space-x-1.5">
+            <span class="font-bold text-base sm:text-lg tracking-tight text-gob-textMain leading-none">ESCUDO DIGITAL</span>
+            <span class="bg-red-100 text-gob-red text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">Perú</span>
+          </div>
+          <p class="text-[10px] sm:text-[11px] text-gob-textSec font-medium mt-0.5">Orientación ante Extorsiones y Estafas</p>
+        </div>
+      </a>
+
+      <!-- Quick Action Right -->
+      <div class="flex items-center space-x-2">
+        <button onclick="showEmergencyModal()" class="bg-red-50 hover:bg-red-100 text-gob-red border border-red-200 text-xs font-semibold px-2.5 sm:px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1.5 min-h-[44px]">
+          <i class="fas fa-phone-flip text-xs"></i>
+          <span class="hidden xs:inline">Emergencia</span> <span>105</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER CONTAINER -->
+  <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 py-4 sm:py-8">
+
+    <!-- OVERVIEW MOCKUP CONTAINER (HIDDEN BY DEFAULT, TOGGLEABLE) -->
+    <div id="overview-modal" class="hidden mb-6 sm:mb-8 bg-slate-900 text-white p-4 sm:p-6 rounded-2xl border border-slate-700 shadow-2xl transition-all">
+      <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-700">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+            <i class="fas fa-sitemap text-gob-red"></i> Mapa Completo del Flujo
+          </h2>
+          <p class="text-xs text-slate-400">Visualización general de la navegación interactiva de 4 niveles</p>
+        </div>
+        <button onclick="toggleMockupOverview()" class="text-slate-400 hover:text-white p-2 min-h-[44px]">
+          <i class="fas fa-xmark text-xl"></i>
+        </button>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-slate-900">
+        <!-- Frame 1 -->
+        <div class="bg-gob-bg p-3.5 rounded-xl border border-slate-300 text-xs flex flex-col justify-between">
+          <div>
+            <div class="font-bold text-gob-red mb-1 border-b pb-1">Nivel 0: Inicio</div>
+            <p class="font-medium text-slate-700 mb-2">Evaluación rápida de la amenaza sin recolección de datos.</p>
+            <ul class="list-disc pl-4 text-[11px] text-slate-600 space-y-1">
+              <li>Header gob.pe oficial</li>
+              <li>Mensaje de contención</li>
+              <li>Categorías principales</li>
+            </ul>
+          </div>
+          <button onclick="goToStep(0)" class="mt-3 w-full bg-slate-800 text-white py-2 rounded-lg text-[11px] hover:bg-black font-semibold min-h-[40px]">Ver esta pantalla</button>
+        </div>
+
+        <!-- Frame 2 -->
+        <div class="bg-gob-bg p-3.5 rounded-xl border border-slate-300 text-xs flex flex-col justify-between">
+          <div>
+            <div class="font-bold text-gob-link mb-1 border-b pb-1">Nivel 1: Selección Escenario</div>
+            <p class="font-medium text-slate-700 mb-2">Identificación de la tipología del delito.</p>
+            <ul class="list-disc pl-4 text-[11px] text-slate-600 space-y-1">
+              <li>Tarjetas táctiles adaptables</li>
+              <li>Detalle de amenazas</li>
+              <li>Acceso directo a guías</li>
+            </ul>
+          </div>
+          <button onclick="goToStep(1)" class="mt-3 w-full bg-slate-800 text-white py-2 rounded-lg text-[11px] hover:bg-black font-semibold min-h-[40px]">Ver esta pantalla</button>
+        </div>
+
+        <!-- Frame 3 -->
+        <div class="bg-gob-bg p-3.5 rounded-xl border border-slate-300 text-xs flex flex-col justify-between">
+          <div>
+            <div class="font-bold text-amber-700 mb-1 border-b pb-1">Nivel 2: Guías e Instrucciones</div>
+            <p class="font-medium text-slate-700 mb-2">Pasos inmediatos de contención y recolección de pruebas.</p>
+            <ul class="list-disc pl-4 text-[11px] text-slate-600 space-y-1">
+              <li>Contención psicológica</li>
+              <li>Preservación digital</li>
+              <li>Checklist activo</li>
+            </ul>
+          </div>
+          <button onclick="goToStep(2)" class="mt-3 w-full bg-slate-800 text-white py-2 rounded-lg text-[11px] hover:bg-black font-semibold min-h-[40px]">Ver esta pantalla</button>
+        </div>
+
+        <!-- Frame 4 -->
+        <div class="bg-gob-bg p-3.5 rounded-xl border border-slate-300 text-xs flex flex-col justify-between">
+          <div>
+            <div class="font-bold text-emerald-700 mb-1 border-b pb-1">Nivel 3: Canalización</div>
+            <p class="font-medium text-slate-700 mb-2">Derivación directa a canales de denuncia institucional.</p>
+            <ul class="list-disc pl-4 text-[11px] text-slate-600 space-y-1">
+              <li>Línea 105 PNP Directo</li>
+              <li>Central 1818 Mininter</li>
+              <li>Garantía de confidencialidad</li>
+            </ul>
+          </div>
+          <button onclick="goToStep(3)" class="mt-3 w-full bg-slate-800 text-white py-2 rounded-lg text-[11px] hover:bg-black font-semibold min-h-[40px]">Ver esta pantalla</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANTALLA 0: INICIO -->
+    <section id="step-0" class="space-y-6 max-w-4xl mx-auto">
+      
+      <!-- Header / Banner Tranquilizador -->
+      <div class="bg-white p-5 sm:p-8 rounded-2xl border border-gob-border shadow-sm text-left space-y-3">
+        <div class="inline-flex items-center space-x-2 bg-blue-50 text-gob-link px-3 py-1 rounded-full text-xs font-semibold border border-blue-100">
+          <i class="fas fa-shield-heart text-gob-link"></i>
+          <span>Asistencia Ciudadana Inmediata y Completa</span>
+        </div>
+        <h1 class="text-xl sm:text-3xl font-extrabold text-gob-textMain tracking-tight leading-snug">
+          Estás en una situación de riesgo. Te guiamos paso a paso.
+        </h1>
+        <p class="text-gob-textSec text-xs sm:text-base leading-relaxed">
+          Orientación inmediata, confidencial y sin guardar tus datos personales. Diseñado especialmente para estudiantes universitarios, emprendedores y pequeños comerciantes.
+        </p>
+      </div>
+
+      <!-- Título de Selección -->
+      <div>
+        <h2 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-gob-textSec mb-3 px-1">
+          ¿Qué está sucediendo en este momento? Selecciona la categoría principal
+        </h2>
+
+        <!-- Categorías Principales - Grid Responsivo (1 col en celular, 2 col en PC) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          
+          <!-- RAMA A -->
+          <button onclick="selectOption('A')" class="group bg-gob-cardBg hover:bg-slate-50 border border-gob-border hover:border-gob-link rounded-2xl p-4 sm:p-5 text-left transition-all shadow-sm hover:shadow-md flex items-start space-x-3.5 sm:space-x-4 focus-ring min-h-[64px]">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 bg-red-50 text-gob-red rounded-xl flex-shrink-0 flex items-center justify-center group-hover:bg-gob-red group-hover:text-white transition-colors">
+              <i class="fas fa-phone-slash text-lg sm:text-xl"></i>
+            </div>
+            <div class="flex-grow">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-sm sm:text-base font-bold text-gob-link group-hover:underline leading-snug">
+                  Amenazas, Cobro de Cupos y Extorsión Directa
+                </h3>
+                <i class="fas fa-chevron-right text-slate-400 group-hover:text-gob-link transition-transform group-hover:translate-x-1 flex-shrink-0"></i>
+              </div>
+              <p class="text-xs text-gob-textSec mt-1.5 leading-relaxed">
+                Llamadas extorsivas, cobro de cupos a negocios/colectivos, falsos secuestros, amenazas a familiares, cobradores de 'Gota a Gota' o extorsión por apps de préstamo.
+              </p>
+            </div>
+          </button>
+
+          <!-- RAMA B -->
+          <button onclick="selectOption('B')" class="group bg-gob-cardBg hover:bg-slate-50 border border-gob-border hover:border-gob-link rounded-2xl p-4 sm:p-5 text-left transition-all shadow-sm hover:shadow-md flex items-start space-x-3.5 sm:space-x-4 focus-ring min-h-[64px]">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 bg-blue-50 text-gob-link rounded-xl flex-shrink-0 flex items-center justify-center group-hover:bg-gob-link group-hover:text-white transition-colors">
+              <i class="fas fa-folder-closed text-lg sm:text-xl"></i>
+            </div>
+            <div class="flex-grow">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-sm sm:text-base font-bold text-gob-link group-hover:underline leading-snug">
+                  Preservación de Pruebas Digitales y Evidencia
+                </h3>
+                <i class="fas fa-chevron-right text-slate-400 group-hover:text-gob-link transition-transform group-hover:translate-x-1 flex-shrink-0"></i>
+              </div>
+              <p class="text-xs text-gob-textSec mt-1.5 leading-relaxed">
+                Guía completa para capturar chats (WhatsApp, Telegram, Messenger), exportar audios/videos, validar comprobantes falsos de Yape/Plin y links maliciosos.
+              </p>
+            </div>
+          </button>
+
+          <!-- RAMA C -->
+          <button onclick="selectOption('C')" class="group bg-gob-cardBg hover:bg-slate-50 border border-gob-border hover:border-gob-link rounded-2xl p-4 sm:p-5 text-left transition-all shadow-sm hover:shadow-md flex items-start space-x-3.5 sm:space-x-4 focus-ring min-h-[64px]">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 bg-emerald-50 text-emerald-700 rounded-xl flex-shrink-0 flex items-center justify-center group-hover:bg-emerald-700 group-hover:text-white transition-colors">
+              <i class="fas fa-building-columns text-lg sm:text-xl"></i>
+            </div>
+            <div class="flex-grow">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-sm sm:text-base font-bold text-gob-link group-hover:underline leading-snug">
+                  Canales Oficiales, Requisitos y Denuncia
+                </h3>
+                <i class="fas fa-chevron-right text-slate-400 group-hover:text-gob-link transition-transform group-hover:translate-x-1 flex-shrink-0"></i>
+              </div>
+              <p class="text-xs text-gob-textSec mt-1.5 leading-relaxed">
+                Ubicación de comisaría o DEPINCRI, denuncias anónimas, denuncia virtual en la web PNP, Reserva de Identidad y protección legal al denunciante.
+              </p>
+            </div>
+          </button>
+
+          <!-- RAMA D -->
+          <button onclick="selectOption('D')" class="group bg-gob-cardBg hover:bg-slate-50 border border-gob-border hover:border-gob-link rounded-2xl p-4 sm:p-5 text-left transition-all shadow-sm hover:shadow-md flex items-start space-x-3.5 sm:space-x-4 focus-ring min-h-[64px]">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 bg-purple-50 text-purple-700 rounded-xl flex-shrink-0 flex items-center justify-center group-hover:bg-purple-700 group-hover:text-white transition-colors">
+              <i class="fas fa-mask text-lg sm:text-xl"></i>
+            </div>
+            <div class="flex-grow">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-sm sm:text-base font-bold text-gob-link group-hover:underline leading-snug">
+                  Suplantación de Identidad y Sextorsión
+                </h3>
+                <i class="fas fa-chevron-right text-slate-400 group-hover:text-gob-link transition-transform group-hover:translate-x-1 flex-shrink-0"></i>
+              </div>
+              <p class="text-xs text-gob-textSec mt-1.5 leading-relaxed">
+                Perfiles falsos con tus fotos, chantaje con imágenes íntimas (sextorsión), suplantación en WhatsApp/redes para pedir dinero a tus contactos.
+              </p>
+            </div>
+          </button>
+
+          <!-- RAMA E -->
+          <button onclick="selectOption('E')" class="group bg-gob-cardBg hover:bg-slate-50 border border-gob-border hover:border-gob-link rounded-2xl p-4 sm:p-5 text-left transition-all shadow-sm hover:shadow-md flex items-start space-x-3.5 sm:space-x-4 focus-ring min-h-[64px] md:col-span-2 lg:col-span-1">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 bg-amber-50 text-amber-700 rounded-xl flex-shrink-0 flex items-center justify-center group-hover:bg-amber-700 group-hover:text-white transition-colors">
+              <i class="fas fa-credit-card text-lg sm:text-xl"></i>
+            </div>
+            <div class="flex-grow">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-sm sm:text-base font-bold text-gob-link group-hover:underline leading-snug">
+                  Estafas Comerciales, Phishing y Fraude Bancario
+                </h3>
+                <i class="fas fa-chevron-right text-slate-400 group-hover:text-gob-link transition-transform group-hover:translate-x-1 flex-shrink-0"></i>
+              </div>
+              <p class="text-xs text-gob-textSec mt-1.5 leading-relaxed">
+                Compras online no entregadas, clonación de tarjetas, SMS/correos falsos de bancos, ofertas de trabajo falsas que piden dinero por adelantado.
+              </p>
+            </div>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- Trust Note Footer -->
+      <div class="bg-slate-100 p-3.5 rounded-xl border border-slate-200 text-center text-xs text-gob-textSec flex items-center justify-center space-x-2">
+        <i class="fas fa-user-shield text-gob-red"></i>
+        <span><strong>Privacidad garantizada:</strong> Tu navegación es 100% anónima. Ningún dato ni consulta queda registrado.</span>
+      </div>
+
+    </section>
+
+    <!-- PANTALLA 1: SELECCIÓN DE ESCENARIO -->
+    <section id="step-1" class="hidden space-y-6 max-w-4xl mx-auto">
+      
+      <div class="flex items-center justify-between">
+        <button onclick="goToStep(0)" class="text-xs sm:text-sm font-semibold text-gob-link hover:underline flex items-center gap-1.5 py-1 px-2 rounded-lg hover:bg-slate-200/50 min-h-[40px]">
+          <i class="fas fa-arrow-left"></i> Volver al inicio
+        </button>
+        <span class="text-xs font-medium text-gob-textSec bg-white px-2.5 py-1 rounded-full border border-gob-border">Paso 1 de 3</span>
+      </div>
+
+      <div class="bg-white p-5 sm:p-7 rounded-2xl border border-gob-border shadow-sm">
+        <h2 class="text-lg sm:text-2xl font-bold text-gob-textMain leading-tight">
+          Selecciona la situación que más se parece a la tuya
+        </h2>
+        <p class="text-gob-textSec text-xs sm:text-sm mt-1">
+          Esto nos permitirá darte instrucciones precisas para tu caso particular.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5" id="scenarios-container">
+        <!-- Generado dinámicamente según la rama elegida en el Step 0 -->
+      </div>
+
+      <div class="pt-2 text-center">
+        <button onclick="goToStep(2)" class="text-xs sm:text-sm text-gob-link hover:underline font-semibold p-2">
+          Ninguna de estas – ver todas las guías de orientación
+        </button>
+      </div>
+
+    </section>
+
+    <!-- PANTALLA 2: GUÍAS DE ORIENTACIÓN (CONTENCIÓN Y EVIDENCIAS) -->
+    <section id="step-2" class="hidden space-y-6 max-w-4xl mx-auto">
+      
+      <div class="flex items-center justify-between">
+        <button onclick="goToStep(1)" class="text-xs sm:text-sm font-semibold text-gob-link hover:underline flex items-center gap-1.5 py-1 px-2 rounded-lg hover:bg-slate-200/50 min-h-[40px]">
+          <i class="fas fa-arrow-left"></i> Cambiar situación
+        </button>
+        <span class="text-xs font-medium text-gob-textSec bg-white px-2.5 py-1 rounded-full border border-gob-border">Paso 2 de 3</span>
+      </div>
+
+      <!-- CONTENIDO DINÁMICO DE GUÍAS -->
+      <div id="step-2-content" class="space-y-6">
+        <!-- Se renderización dinámicamente según la opción elegida -->
+      </div>
+
+    </section>
+
+    <!-- PANTALLA 3: CANALIZACIÓN Y CONTACTO OFICIAL -->
+    <section id="step-3" class="hidden space-y-6 max-w-4xl mx-auto">
+      
+      <div class="flex items-center justify-between">
+        <button onclick="goToStep(2)" class="text-xs sm:text-sm font-semibold text-gob-link hover:underline flex items-center gap-1.5 py-1 px-2 rounded-lg hover:bg-slate-200/50 min-h-[40px]">
+          <i class="fas fa-arrow-left"></i> Regresar a la guía
+        </button>
+        <span class="text-xs font-medium text-gob-textSec bg-white px-2.5 py-1 rounded-full border border-gob-border">Paso 3 de 3</span>
+      </div>
+
+      <div class="bg-white p-5 sm:p-8 rounded-2xl border border-gob-border shadow-sm text-center space-y-5">
+        
+        <div class="w-14 h-14 sm:w-16 sm:h-16 bg-red-100 text-gob-red rounded-full flex items-center justify-center mx-auto text-xl sm:text-2xl">
+          <i class="fas fa-phone-volume"></i>
+        </div>
+
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-gob-textMain leading-tight">
+            Es momento de contactar a las autoridades oficiales
+          </h2>
+          <p class="text-gob-textSec text-xs sm:text-sm max-w-lg mx-auto mt-1.5 leading-relaxed">
+            Los siguientes canales operan las 24 horas del día. Recibirás atención profesional especializada de la Policía Nacional del Perú.
+          </p>
+        </div>
+
+        <!-- Dos botones grandes y claros -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          
+          <!-- Botón Principal: Línea 105 PNP -->
+          <a href="tel:105" class="bg-gob-red hover:bg-gob-redHover text-white p-5 rounded-2xl text-left border border-red-700 shadow-sm transition-all flex flex-col justify-between group focus-ring min-h-[120px]">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-red-200">Urgencias Inmediatas</span>
+                <i class="fas fa-phone text-lg group-hover:scale-110 transition-transform"></i>
+              </div>
+              <div class="text-2xl sm:text-3xl font-extrabold mt-1">Línea 105</div>
+              <p class="text-xs text-red-100 mt-1 leading-relaxed">Central de Emergencias PNP (Atención las 24 Horas)</p>
+            </div>
+            <div class="mt-4 pt-2.5 border-t border-red-600/50 text-xs font-bold flex items-center justify-between">
+              <span>Llamar gratuitamente</span>
+              <i class="fas fa-arrow-right"></i>
+            </div>
+          </a>
+
+          <!-- Botón Secundario: Central 1818 Mininter -->
+          <a href="tel:1818" class="bg-slate-900 hover:bg-black text-white p-5 rounded-2xl text-left border border-slate-800 shadow-sm transition-all flex flex-col justify-between group focus-ring min-h-[120px]">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Denuncia Especializada</span>
+                <i class="fas fa-headset text-lg group-hover:scale-110 transition-transform"></i>
+              </div>
+              <div class="text-2xl sm:text-3xl font-extrabold mt-1">Central 1818</div>
+              <p class="text-xs text-slate-300 mt-1 leading-relaxed">Ministerio del Interior (Especialistas en Extorsión)</p>
+            </div>
+            <div class="mt-4 pt-2.5 border-t border-slate-700 text-xs font-bold flex items-center justify-between">
+              <span>Llamar ahora</span>
+              <i class="fas fa-arrow-right"></i>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Texto de Confianza Institucional -->
+        <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl text-left space-y-1.5 mt-4">
+          <div class="flex items-center space-x-2 text-gob-textMain font-bold text-xs sm:text-sm">
+            <i class="fas fa-user-lock text-emerald-600"></i>
+            <span>Garantía Institucional de Protección</span>
+          </div>
+          <p class="text-xs text-gob-textSec leading-relaxed">
+            Estas líneas son 100% oficiales. Tu identidad y ubicación se mantendrán bajo reserva. Recuerda llevar el archivo de evidencia digital recopilado si te solicitan acudir a la comisaría o Depincri más cercana.
+          </p>
+        </div>
+
+        <!-- Enlace discreto para volver -->
+        <div class="pt-3">
+          <a href="#" onclick="resetToHome(event)" class="text-xs text-gob-textSec hover:text-gob-link underline font-medium p-2 inline-block">
+            Volver al inicio de la plataforma
+          </a>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- MODAL DE EMERGENCIA / INFORMACIÓN DE CANALES -->
+  <div id="emergency-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
+    <div class="bg-white rounded-t-2xl sm:rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-gob-border space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b pb-3">
+        <h3 class="font-bold text-base sm:text-lg text-gob-textMain flex items-center gap-2">
+          <i class="fas fa-phone-volume text-gob-red"></i> Números Directos de Auxilio
+        </h3>
+        <button onclick="closeEmergencyModal()" class="text-slate-400 hover:text-slate-600 p-2 min-h-[44px]">
+          <i class="fas fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3">
+        <a href="tel:105" class="block p-3.5 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl transition-colors">
+          <div class="font-bold text-gob-red text-sm sm:text-base">Línea 105 - PNP</div>
+          <div class="text-xs text-slate-700 mt-0.5">Emergencias inmediatas en todo el Perú (Gratuito 24h).</div>
+        </a>
+
+        <a href="tel:1818" class="block p-3.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-colors">
+          <div class="font-bold text-gob-textMain text-sm sm:text-base">Central 1818 - Mininter</div>
+          <div class="text-xs text-slate-700 mt-0.5">Canal directo para casos de extorsión y cobro de cupos.</div>
+        </a>
+
+        <a href="tel:114" class="block p-3.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-colors">
+          <div class="font-bold text-gob-textMain text-sm sm:text-base">Línea 114 - Asistencia a Víctimas</div>
+          <div class="text-xs text-slate-700 mt-0.5">Orientación psicológica y contención en situaciones críticas.</div>
+        </a>
+      </div>
+
+      <button onclick="closeEmergencyModal()" class="w-full bg-slate-200 hover:bg-slate-300 text-gob-textMain text-xs sm:text-sm font-bold py-3 rounded-xl transition-colors min-h-[44px]">
+        Cerrar ventana
+      </button>
+    </div>
+  </div>
+
+  <!-- PIE DE PÁGINA MINIMALISTA -->
+  <footer class="bg-white border-t border-gob-border mt-8 py-6 text-xs text-gob-textSec">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+      <div>
+        <div class="font-bold text-gob-textMain">Plataforma “ESCUDO DIGITAL” - Perú</div>
+        <div class="text-[11px] text-slate-500 mt-0.5">Orientación rápida y confiable ante delitos informáticos y extorsión.</div>
+      </div>
+      <div class="flex items-center space-x-3 text-[11px] flex-wrap justify-center">
+        <span class="flex items-center gap-1"><i class="fas fa-lock text-gob-red"></i> Sin registros</span>
+        <span>•</span>
+        <span>Canales PNP & Mininter</span>
+        <span>•</span>
+        <a href="#" onclick="toggleMockupOverview(); return false;" class="text-gob-link hover:underline font-semibold py-1">
+          Vista de Diagrama
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- LOGIC SCRIPT -->
+  <script>
+    // State variable for step
+    let currentStep = 0;
+    let selectedBranch = 'A';
+    let selectedScenarioIndex = 0;
+
+    // Scenarios data for each branch (A, B, C, D, E)
+    const scenariosData = {
+      'A': [
+        { icon: 'fa-phone-volume', title: 'Llamadas o mensajes extorsivos ("Cobro de Cupos")', desc: 'Te exigen pago periódico para dejarte trabajar o amenazan tu local/familia.' },
+        { icon: 'fa-hand-holding-dollar', title: 'Préstamos informales "Gota a Gota" o Apps de crédito', desc: 'Intereses abusivos, amenazas de muerte o difamación tras solicitar un préstamo.' },
+        { icon: 'fa-user-ninja', title: 'Falso secuestro o llamadas de supuestos familiares detenidos', desc: 'Llamadas de pánico afirmando tener a un familiar o exigiendo dinero para la policía.' },
+        { icon: 'fa-burst', title: 'Atentados, explosivos o notas amedrentadoras', desc: 'Dejan cartas o artefactos en tu vivienda, negocio o medio de transporte.' }
+      ],
+      'B': [
+        { icon: 'fa-camera', title: 'Captura y resguardo de chats (WhatsApp / Telegram)', desc: 'Pasos para registrar conversaciones enteras sin romper la cadena de evidencia.' },
+        { icon: 'fa-file-audio', title: 'Resguardo de llamadas y audios amenazantes', desc: 'Cómo guardar y exportar notas de voz o grabaciones sin que pierdan validez.' },
+        { icon: 'fa-receipt', title: 'Verificación de comprobantes de pago falsos (Yape/Plin)', desc: 'Validación de capturas editadas o vouchers fraguados de transferencias.' },
+        { icon: 'fa-globe', title: 'Copia de enlaces, perfiles y direcciones IP sospechosas', desc: 'Cómo documentar páginas web, URLs de perfiles o correos para la investigación.' }
+      ],
+      'C': [
+        { icon: 'fa-building-shield', title: 'Ubicación de comisarías y dependencias DEPINCRI', desc: 'Dónde acudir presencialmente según tu tipo de caso y lugar de residencia.' },
+        { icon: 'fa-user-secret', title: 'Solicitud de Denuncia Anónima y Reserva de Identidad', desc: 'Protección legal para proteger tus datos personales al hacer el reporte.' },
+        { icon: 'fa-laptop-code', title: 'Mesa de partes virtual y denuncia en línea PNP', desc: 'Trámites digitales oficiales desde tu computadora o teléfono celular.' },
+        { icon: 'fa-handshake-angle', title: 'Acompañamiento psicológico y legal a víctimas', desc: 'Líneas de soporte emocional y asesoría jurídica gratuita del Estado.' }
+      ],
+      'D': [
+        { icon: 'fa-user-xmark', title: 'Suplantación de identidad en WhatsApp o redes sociales', desc: 'Crearon un perfil falso con tus datos o hackearon tu cuenta para pedir dinero.' },
+        { icon: 'fa-lock', title: 'Sextorsión y chantaje con fotografías íntimas', desc: 'Amenazas con difundir contenido privado a tus contactos o redes si no pagas.' },
+        { icon: 'fa-users-slash', title: 'Acoso cibernético y ciberbullying sistemático', desc: 'Hostigamiento continuo, insultos o campañas de difamación en plataformas digitales.' },
+        { icon: 'fa-key', title: 'Pérdida de acceso o hackeo de cuentas bancarias/correo', desc: 'Acciones inmediatas para congelar credenciales y recuperar el control.' }
+      ],
+      'E': [
+        { icon: 'fa-mobile-screen-button', title: 'Estafas en Yape / Plin por compras o ventas en línea', desc: 'Pagaste por un producto/servicio que nunca entregaron o usaron una captura engañosa.' },
+        { icon: 'fa-envelope-open-text', title: 'Phishing: Mensajes bancarios o SMS sospechosos con links', desc: 'Mensajes solicitando claves o datos de tarjeta alegando bloqueo de cuenta o bonos.' },
+        { icon: 'fa-briefcase', title: 'Ofertas de trabajo falsas que exigen pago previo', desc: 'Empleos desde casa que te obligan a invertir o comprar paquetes para laborar.' },
+        { icon: 'fa-credit-card', title: 'Clonación o consumos no reconocidos en tarjeta', desc: 'Aparición de cobros automáticos o compras que no realizaste.' }
+      ]
+    };
+
+    // Detailed Guides for each Scenario Type
+    const guidesDetail = {
+      'A': {
+        badge: "Medida de Seguridad Inmediata",
+        title: "Primero: mantén la calma y no actúes por impulso",
+        sub: "Los extorsionadores utilizan la prisa y el miedo para obligarte a ceder.",
+        steps: [
+          "<strong>No cedas al pánico:</strong> No respondas con insultos ni muestres desesperación. Corta la llamada de inmediato si es extorsión telefónica.",
+          "<strong>No borres los mensajes ni el chat:</strong> Aunque sea perturbador, ese material es tu principal prueba ante la policía.",
+          "<strong>Bloquea tu perfil en redes sociales:</strong> Pon tus cuentas en privado para evitar que obtengan datos de tus familiares o negocios.",
+          "<strong>Informa a un familiar o persona de confianza:</strong> No lleves esta carga a solas. Un tercero te ayudará a tomar decisiones frías."
+        ],
+        alertTitle: "REGLA DE ORO DE SEGURIDAD",
+        alertText: "No envíes dinero ni confirmes datos personales (nombres de familiares, direcciones o números de cuenta). Pagar NO garantiza que te dejen en paz.",
+        evidenceTitle: "Cómo guardar las pruebas sin alterarlas",
+        evidences: [
+          { icon: "fa-mobile-screen", title: "Capturas de Pantalla completa", desc: "Donde sea visible el número de teléfono emisor y la hora exacta." },
+          { icon: "fa-file-invoice-dollar", title: "Números de Cuenta / Yape / Plin", desc: "Guarda nombres de titulares y números a donde exigieron dinero." },
+          { icon: "fa-microphone", title: "Audios y Videos de amenaza", desc: "Exporta los archivos o reenvíalos a un correo personal seguro." },
+          { icon: "fa-link", title: "Enlaces y Perfiles simulados", desc: "Copia la URL completa del perfil desde el cual te enviaron mensajes." }
+        ]
+      },
+      'B': {
+        badge: "Guía Técnica de Evidencia",
+        title: "Asegura la validez legal de tus pruebas digitales",
+        sub: "Sigue estas pautas para evitar que las pruebas pierdan validez en la denuncia.",
+        steps: [
+          "<strong>Haz capturas sin recortes:</strong> Muestra toda la pantalla, incluyendo la hora, estado de red y número emisor.",
+          "<strong>Exporta chats completos:</strong> En WhatsApp, usa 'Más > Exportar chat' (sin o con archivos) y guárdalo en tu correo.",
+          "<strong>Registra códigos de operación:</strong> Anota códigos TRX de Yape/Plin/Bancos junto al nombre del titular destinatario.",
+          "<strong>Conserva archivos originales:</strong> No edites ni alteres imágenes, audios o enlaces que hayas recibido."
+        ],
+        alertTitle: "RECOMENDACIÓN TÉCNICA",
+        alertText: "Guarda un respaldo en la nube (Google Drive o iCloud) o envíate todo por correo por si tu teléfono sufre daños o pérdida.",
+        evidenceTitle: "Formatos indispensables para tu denuncia",
+        evidences: [
+          { icon: "fa-comments", title: "Exportación de Chat en TXT/PDF", desc: "Historial completo sin ediciones del hilo de conversación." },
+          { icon: "fa-receipt", title: "Comprobantes bancarios en PDF", desc: "Descargados directamente de tu App bancaria original." },
+          { icon: "fa-file-audio", title: "Audios originales (.m4a / .mp3)", desc: "Archivos descargados directos del chat sin comprimir." },
+          { icon: "fa-globe", title: "URL del perfil o página falsa", desc: "Dirección web completa copiada directamente del navegador." }
+        ]
+      },
+      'C': {
+        badge: "Orientación Legal e Institucional",
+        title: "Requisitos y procedimiento para formalizar tu denuncia",
+        sub: "Prepárate adecuadamente antes de acudir a la comisaría o entidad correspondiente.",
+        steps: [
+          "<strong>Lleva tu DNI original:</strong> Es indispensable para identificarte (tu identidad se mantendrá en reserva si lo solicitas).",
+          "<strong>Lleva tu celular cargado:</strong> Muestra al efectivo policial las capturas y audios archivados.",
+          "<strong>Solicita copia de la denuncia:</strong> Exige tu copia certificada del reporte de denuncia policial de forma gratuita.",
+          "<strong>Pide la reserva de identidad:</strong> Amparado en la Ley de Protección al Denunciante si sientes riesgo directo."
+        ],
+        alertTitle: "DERECHO DEL CIUDADANO",
+        alertText: "Cualquier comisaría está obligada a recibir tu denuncia sin importar la jurisdicción donde haya ocurrido el hecho.",
+        evidenceTitle: "Documentos que debes presentar",
+        evidences: [
+          { icon: "fa-address-card", title: "DNI Vigente", desc: "Identificación oficial requerida para el trámite." },
+          { icon: "fa-print", title: "Impresión de capturas (Opcional)", desc: "Facilita la incorporación de las pruebas al expediente." },
+          { icon: "fa-list-numeric", title: "Lista de números involucrados", desc: "Relación de números de teléfono o cuentas bancarias." },
+          { icon: "fa-file-lines", title: "Relato cronológico de los hechos", desc: "Breve resumen de fechas y horas en que ocurrieron los eventos." }
+        ]
+      },
+      'D': {
+        badge: "Protección de Privacidad e Imagen",
+        title: "Protege tu identidad y detén el chantaje digital",
+        sub: "Acciones inmediatas ante ciberacoso, sextorsión o robo de cuenta.",
+        steps: [
+          "<strong>No cedas al chantaje sexual ni económico:</strong> Cumplir sus exigencias solo aumentará los montos demandados.",
+          "<strong>Reporta la cuenta o perfil falso:</strong> Usa los botones de reporte de la red social (Instagram, FB, WhatsApp).",
+          "<strong>Alerta a tus contactos cercanos:</strong> Publica un aviso advirtiendo que tu cuenta fue suplantada o hackeada.",
+          "<strong>Activa la verificación en dos pasos (2FA):</strong> Protege de inmediato WhatsApp, correo y redes sociales."
+        ],
+        alertTitle: "ASISTENCIA ESPECIALIZADA",
+        alertText: "La Policía cuenta con la División de Investigación de Delitos de Alta Tecnología (DIVINDAT) para investigar estos casos.",
+        evidenceTitle: "Resguardo de pruebas de acoso",
+        evidences: [
+          { icon: "fa-user-slash", title: "Captura de perfil falso/suplantador", desc: "Pantallazo donde se vea la foto y nombre de usuario usurpado." },
+          { icon: "fa-message", title: "Mensajes de chantaje explícito", desc: "Donde soliciten transferencias a cambio de no publicar archivos." },
+          { icon: "fa-clock-rotate-left", title: "Registro de llamadas e IP", desc: "Correos de aviso de inicio de sesión o historial de llamadas." },
+          { icon: "fa-shield-halved", title: "Captura de publicaciones falsas", desc: "Evidencia de publicaciones donde usen tu imagen sin permiso." }
+        ]
+      },
+      'E': {
+        badge: "Acción Inmediata por Fraude",
+        title: "Qué hacer tras una estafa o transferencia fraudulenta",
+        sub: "Pasos claves para reclamos bancarios y denuncias por delito cibernético.",
+        steps: [
+          "<strong>Comunícate de inmediato con tu banco:</strong> Solicita la retención preventiva o reporte del movimiento (Yape/Plin/Bancos).",
+          "<strong>Bloquea tu tarjeta o banca móvil:</strong> Si diste datos confidenciales, claves o Token en un enlace falso.",
+          "<strong>Guarda el perfil del vendedor/comprador:</strong> Guarda fotos de la tienda virtual, número de contacto y publicaciones.",
+          "<strong>Presenta reclamo en Indecopi y PNP:</strong> Además de la denuncia policial, puedes abrir reclamo por fraude comercial."
+        ],
+        alertTitle: "ADVERTENCIA BANCARIA",
+        alertText: "Los bancos NUNCA te pedirán claves secretas, Token ni contraseñas por llamada, SMS ni enlaces por correo.",
+        evidenceTitle: "Evidencia requerida para el reclamo bancario",
+        evidences: [
+          { icon: "fa-receipt", title: "Constancia de Yape / Plin / Transferencia", desc: "Comprobante emitido con número de operación y destinatario." },
+          { icon: "fa-store-slash", title: "Captura de oferta o tienda en línea", desc: "Anuncio del producto o servicio contratado no entregado." },
+          { icon: "fa-envelope", title: "Correo o SMS Phishing engañoso", desc: "El mensaje recibido que te condujo a la web fraudulenta." },
+          { icon: "fa-building-bank", title: "Estado de cuenta con consumos", desc: "Muestra clara del débito o cobro no autorizado." }
+        ]
+      }
+    };
+
+    // Navigation function
+    function goToStep(stepNumber) {
+      currentStep = stepNumber;
+      
+      // Update screens visibility
+      document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById(`step-${stepNumber}`).classList.remove('hidden');
+
+      // Scroll to top smooth
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Branch selection in Step 0
+    function selectOption(branch) {
+      selectedBranch = branch;
+      renderScenarios(branch);
+      goToStep(1);
+    }
+
+    // Render scenarios dynamically for Step 1
+    function renderScenarios(branch) {
+      const container = document.getElementById('scenarios-container');
+      const list = scenariosData[branch] || scenariosData['A'];
+
+      container.innerHTML = list.map((item, idx) => `
+        <button onclick="selectScenario(${idx})" class="group bg-white hover:bg-slate-50 border border-gob-border hover:border-gob-link rounded-2xl p-4 sm:p-5 text-left transition-all shadow-sm hover:shadow-md flex items-start space-x-3.5 sm:space-x-4 focus-ring min-h-[64px]">
+          <div class="w-10 h-10 bg-blue-50 text-gob-link rounded-xl flex-shrink-0 flex items-center justify-center group-hover:bg-gob-link group-hover:text-white transition-colors">
+            <i class="fas ${item.icon} text-base sm:text-lg"></i>
+          </div>
+          <div class="flex-grow">
+            <div class="flex items-center justify-between gap-2">
+              <h3 class="text-xs sm:text-base font-bold text-gob-link group-hover:underline leading-snug">
+                ${item.title}
+              </h3>
+              <i class="fas fa-chevron-right text-slate-400 group-hover:text-gob-link transition-transform group-hover:translate-x-1 flex-shrink-0"></i>
+            </div>
+            <p class="text-xs text-gob-textSec mt-1 leading-relaxed">
+              ${item.desc}
+            </p>
+          </div>
+        </button>
+      `).join('');
+    }
+
+    // Select specific scenario and build customized Step 2
+    function selectScenario(index) {
+      selectedScenarioIndex = index;
+      renderStep2Content();
+      goToStep(2);
+    }
+
+    // Render dynamic Step 2 based on selected category
+    function renderStep2Content() {
+      const container = document.getElementById('step-2-content');
+      const data = guidesDetail[selectedBranch] || guidesDetail['A'];
+      const scenarioList = scenariosData[selectedBranch] || scenariosData['A'];
+      const scenarioObj = scenarioList[selectedScenarioIndex] || scenarioList[0];
+
+      container.innerHTML = `
+        <!-- ENCABEZADO DE CONTEXTO ELEGIDO -->
+        <div class="bg-blue-50 border border-blue-200 p-4 rounded-2xl flex items-center gap-3.5">
+          <div class="w-10 h-10 bg-gob-link text-white rounded-xl flex items-center justify-center flex-shrink-0">
+            <i class="fas ${scenarioObj.icon} text-lg"></i>
+          </div>
+          <div>
+            <span class="text-[10px] sm:text-[11px] font-bold text-gob-link uppercase tracking-wider">Escenario Seleccionado:</span>
+            <h3 class="font-bold text-slate-900 text-xs sm:text-base leading-tight">${scenarioObj.title}</h3>
+          </div>
+        </div>
+
+        <!-- GUÍA 1: CONTENCIÓN Y PROTOCOLO ADAPTADO -->
+        <div class="bg-white p-5 sm:p-7 rounded-2xl border border-gob-border shadow-sm space-y-5">
+          <div class="border-b border-gob-border pb-4">
+            <span class="inline-block bg-amber-100 text-amber-900 text-[10px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded uppercase tracking-wider mb-2">
+              ${data.badge}
+            </span>
+            <h2 class="text-lg sm:text-2xl font-bold text-gob-textMain leading-tight">
+              ${data.title}
+            </h2>
+            <p class="text-gob-textSec text-xs sm:text-sm mt-1">
+              ${data.sub}
+            </p>
+          </div>
+
+          <!-- Lista numerada de pasos -->
+          <ol class="space-y-3.5 text-xs sm:text-sm text-gob-textMain">
+            ${data.steps.map((step, i) => `
+              <li class="flex items-start space-x-3">
+                <span class="w-6 h-6 rounded-full bg-slate-100 border border-slate-300 text-gob-textMain font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">${i + 1}</span>
+                <span class="leading-relaxed">${step}</span>
+              </li>
+            `).join('')}
+          </ol>
+
+          <!-- CAJA DESTACADA EN ROJO SUAVE -->
+          <div class="bg-red-50 border-l-4 border-gob-red p-4 rounded-r-xl space-y-1">
+            <div class="flex items-center space-x-2 text-gob-red font-bold text-xs sm:text-sm">
+              <i class="fas fa-triangle-exclamation"></i>
+              <span>${data.alertTitle}</span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-800 font-medium leading-relaxed">
+              ${data.alertText}
+            </p>
+          </div>
+        </div>
+
+        <!-- GUÍA 2: PRESERVACIÓN DE EVIDENCIAS DIGITALES -->
+        <div class="bg-white p-5 sm:p-7 rounded-2xl border border-gob-border shadow-sm space-y-5">
+          <div class="border-b border-gob-border pb-4">
+            <h2 class="text-lg sm:text-xl font-bold text-gob-textMain flex items-center gap-2">
+              <i class="fas fa-camera text-gob-link"></i> ${data.evidenceTitle}
+            </h2>
+            <p class="text-gob-textSec text-xs sm:text-sm mt-1">
+              Revisa esta lista y asegúrate de registrar cada detalle antes de bloquear o denunciar.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+            ${data.evidences.map(ev => `
+              <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex items-start space-x-3">
+                <i class="fas ${ev.icon} text-gob-link text-base sm:text-lg mt-0.5 flex-shrink-0"></i>
+                <div>
+                  <span class="font-bold text-gob-textMain block text-xs sm:text-sm">${ev.title}</span>
+                  <span class="text-gob-textSec text-[11px] mt-0.5 block leading-normal">${ev.desc}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <!-- Checklist de confirmación -->
+          <div class="pt-2">
+            <label class="flex items-center space-x-3 p-3.5 bg-blue-50 border border-blue-100 rounded-xl cursor-pointer">
+              <input type="checkbox" id="evidence-check" class="w-4 h-4 text-gob-red rounded border-gray-300 focus:ring-gob-red flex-shrink-0">
+              <span class="text-xs sm:text-sm font-semibold text-gob-textMain leading-tight">He recopilado o protegido la mayor cantidad de pruebas posibles</span>
+            </label>
+          </div>
+
+          <!-- Botón principal en Rojo Institucional -->
+          <button id="btn-to-step3" onclick="goToStep(3)" class="w-full bg-gob-red hover:bg-gob-redHover text-white font-bold py-3.5 px-4 rounded-xl shadow-sm transition-colors flex items-center justify-center space-x-2 focus-ring min-h-[48px]">
+            <span class="text-xs sm:text-sm">Ya guardé las pruebas → Continuar a denuncia</span>
+          </button>
+
+        </div>
+      `;
+    }
+
+    // Reset flow
+    function resetToHome(e) {
+      if(e) e.preventDefault();
+      goToStep(0);
+    }
+
+    // Toggle emergency modal
+    function showEmergencyModal() {
+      document.getElementById('emergency-modal').classList.remove('hidden');
+    }
+
+    function closeEmergencyModal() {
+      document.getElementById('emergency-modal').classList.add('hidden');
+    }
+
+    // Toggle overview flow mode
+    function toggleMockupOverview() {
+      const overview = document.getElementById('overview-modal');
+      overview.classList.toggle('hidden');
+    }
+  </script>
+
+</body>
+</html>
